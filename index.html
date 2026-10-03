@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecorefrig Vzla</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1b5e20">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 15px; background: #f4f6f8; color: #333; }
+    header { background: #1b5e20; color: white; padding: 15px; text-align: center; border-radius: 8px; }
+    .card { background: white; padding: 15px; margin-top: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .search-box { margin-bottom: 15px; }
+    input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; font-size: 16px; box-sizing: border-box; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #0288d1; color: white; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    tr.highlight { background-color: #c8e6c9; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ecorefrig Vzla</h1>
+    <p>Gestión Ecológica y Cálculos HVACR</p>
+  </header>
+
+  <div class="card">
+    <h3>Tabla Presión - Temperatura: R290 (Propano)</h3>
+    <div class="search-box">
+      <input type="number" id="searchInput" placeholder="Buscar por Temp (°C) o Presión (psig)..." oninput="filtrarTabla()">
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Temp (°C)</th>
+          <th>Temp (°F)</th>
+          <th>Presión (psig)</th>
+          <th>Presión (bar)</th>
+        </tr>
+      </thead>
+      <tbody id="ptTableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const r290Data = [
+      { tempC: -40, tempF: -40.0, psig: 2.7, bar: 0.19 },
+      { tempC: -35, tempF: -31.0, psig: 6.8, bar: 0.47 },
+      { tempC: -30, tempF: -22.0, psig: 11.8, bar: 0.81 },
+      { tempC: -25, tempF: -13.0, psig: 17.7, bar: 1.22 },
+      { tempC: -20, tempF: -4.0,  psig: 24.8, bar: 1.71 },
+      { tempC: -15, tempF: 5.0,   psig: 33.1, bar: 2.28 },
+      { tempC: -10, tempF: 14.0,  psig: 42.8, bar: 2.95 },
+      { tempC: -5,  tempF: 23.0,  psig: 54.0, bar: 3.72 },
+      { tempC: 0,   tempF: 32.0,  psig: 66.8, bar: 4.61 },
+      { tempC: 5,   tempF: 41.0,  psig: 81.5, bar: 5.62 },
+      { tempC: 10,  tempF: 50.0,  psig: 98.0, bar: 6.76 },
+      { tempC: 15,  tempF: 59.0,  psig: 116.7, bar: 8.05 },
+      { tempC: 20,  tempF: 68.0,  psig: 137.6, bar: 9.49 },
+      { tempC: 25,  tempF: 77.0,  psig: 161.0, bar: 11.10 },
+      { tempC: 30,  tempF: 86.0,  psig: 186.8, bar: 12.88 },
+      { tempC: 35,  tempF: 95.0,  psig: 215.4, bar: 14.85 },
+      { tempC: 40,  tempF: 104.0, psig: 246.9, bar: 17.02 }
+    ];
+
+    function cargarTabla(datos) {
+      const tbody = document.getElementById('ptTableBody');
+      tbody.innerHTML = '';
+      datos.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${row.tempC}</td><td>${row.tempF}</td><td>${row.psig}</td><td>${row.bar}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filtrarTabla() {
+      const val = document.getElementById('searchInput').value;
+      if (val === '') { cargarTabla(r290Data); return; }
+      const numVal = parseFloat(val);
+      const tbody = document.getElementById('ptTableBody');
+      tbody.innerHTML = '';
+      r290Data.forEach(row => {
+        const tr = document.createElement('tr');
+        if (Math.abs(row.tempC - numVal) <= 2 || Math.abs(row.psig - numVal) <= 5) {
+          tr.classList.add('highlight');
+        }
+        tr.innerHTML = `<td>${row.tempC}</td><td>${row.tempF}</td><td>${row.psig}</td><td>${row.bar}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => cargarTabla(r290Data));
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
