@@ -1,8 +1,0 @@
-{
-  "short_name": "Ecorefrig",
-  "name": "Ecorefrig Vzla",
-  "start_url": "./index.html",
-  "background_color": "#ffffff",
-  "theme_color": "#1b5e20",
-  "display": "standalone"
-}
